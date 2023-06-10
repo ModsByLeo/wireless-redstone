@@ -11,6 +11,6 @@ public class WirelessRedstoneInitializer implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
-		
+
 	}
 }
