@@ -2,7 +2,7 @@
 	"schema_version": 1,
 	"quilt_loader": {
 		"group": "io.github.modsbyleo",
-		"id": "wireless_redstone",
+		"id": "wireless_redstone_lt",
 		"version": "${version}",
 		"metadata": {
 			"name": "Wireless Redstone: Leo's Take",
@@ -36,5 +36,5 @@
 			}
 		]
 	},
-	"mixin": "wireless_redsstone.mixins.json"
+	"mixin": "wireless_redstone.mixins.json"
 }
