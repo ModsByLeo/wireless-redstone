@@ -15,7 +15,7 @@ import net.minecraft.util.Util;
  * @see RedstoneChannelTransmitter
  * @see RedstoneChannelReceiver
  */
-public record RedstoneChannel(@NotNull Type type, @NotNull UUID ownerUUID, @NotNull String name) {
+public record RedstoneChannelKey(@NotNull Type type, @NotNull UUID ownerUUID, @NotNull String name) {
 	/**
 	 * Represents the type of Redstone channel.
 	 */
@@ -36,8 +36,8 @@ public record RedstoneChannel(@NotNull Type type, @NotNull UUID ownerUUID, @NotN
 	 * @return the newly created channel
 	 */
 	@Contract(value = "_ -> new", pure = true)
-	public static @NotNull RedstoneChannel createGlobal(@NotNull String name) {
-		return new RedstoneChannel(Type.GLOBAL, Util.NIL_UUID, name);
+	public static @NotNull RedstoneChannelKey ofGlobal(@NotNull String name) {
+		return new RedstoneChannelKey(Type.GLOBAL, Util.NIL_UUID, name);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public record RedstoneChannel(@NotNull Type type, @NotNull UUID ownerUUID, @NotN
 	 * @return the newly created channel
 	 */
 	@Contract(value = "_, _ -> new", pure = true)
-	public static @NotNull RedstoneChannel createLocal(@NotNull UUID ownerUUID, @NotNull String name) {
-		return new RedstoneChannel(Type.LOCAL, ownerUUID, name);
+	public static @NotNull RedstoneChannelKey ofLocal(@NotNull UUID ownerUUID, @NotNull String name) {
+		return new RedstoneChannelKey(Type.LOCAL, ownerUUID, name);
 	}
 }
