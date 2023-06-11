@@ -1,5 +1,7 @@
 package io.github.modsbyleo.wirelessredstone;
 
+import com.mojang.serialization.JsonOps;
+import io.github.modsbyleo.wirelessredstone.api.RedstoneChannelKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +13,10 @@ public class WirelessRedstoneInitializer implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
-
+		var key = RedstoneChannelKey.ofGlobal("test");
+		var result = RedstoneChannelKey.CODEC.encodeStart(JsonOps.INSTANCE, key);
+		var a = result.getOrThrow(false, ignored -> {});
+		LOGGER.info(a.toString());
+		throw new RuntimeException("STOP");
 	}
 }

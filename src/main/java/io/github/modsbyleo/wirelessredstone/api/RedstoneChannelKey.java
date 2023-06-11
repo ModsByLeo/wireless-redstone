@@ -5,9 +5,13 @@ import java.util.UUID;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
+import net.minecraft.util.UuidUtil;
 
 /**
  * Identifies a wireless Redstone channel, which supports both {@linkplain RedstoneChannelTransmitter transmitters} and
@@ -30,15 +34,28 @@ public final class RedstoneChannelKey {
 	/**
 	 * Represents the type of Redstone channel.
 	 */
-	public enum Type {
+	public enum Type implements StringIdentifiable {
 		/**
 		 * Represents a <em>global</em> channel, usable by all players.
 		 */
-		GLOBAL,
+		GLOBAL("global"),
 		/**
 		 * Represents a <em>local</em> channel, usable only by the owner.
 		 */
-		LOCAL
+		LOCAL("local");
+
+		private final @NotNull String name;
+
+		Type(@NotNull String name) {
+			this.name = name;
+		}
+
+		@Override
+		public @NotNull String asString() {
+			return name;
+		}
+
+		public static final Codec<RedstoneChannelKey.Type> CODEC = StringIdentifiable.createCodec(RedstoneChannelKey.Type::values);
 	}
 
 	private static final Interner<RedstoneChannelKey> INTERNER = Interners.newWeakInterner();
@@ -63,6 +80,23 @@ public final class RedstoneChannelKey {
 	public static @NotNull RedstoneChannelKey ofLocal(@NotNull UUID ownerUUID, @NotNull String name) {
 		return INTERNER.intern(new RedstoneChannelKey(Type.LOCAL, ownerUUID, name));
 	}
+
+	private static final Codec<RedstoneChannelKey> GLOBAL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.STRING.fieldOf("name").forGetter(RedstoneChannelKey::name)
+	).apply(instance, RedstoneChannelKey::ofGlobal));
+
+	private static final Codec<RedstoneChannelKey> LOCAL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		UuidUtil.STRING_CODEC.fieldOf("owner").forGetter(RedstoneChannelKey::ownerUUID),
+		Codec.STRING.fieldOf("name").forGetter(RedstoneChannelKey::name)
+	).apply(instance, RedstoneChannelKey::ofLocal));
+
+	public static final Codec<RedstoneChannelKey> CODEC = Type.CODEC.dispatch(RedstoneChannelKey::type, type -> {
+		if (type == Type.GLOBAL) {
+			return GLOBAL_CODEC;
+		} else {
+			return LOCAL_CODEC;
+		}
+	});
 
 	/**
 	 * {@return the type of the channel}
