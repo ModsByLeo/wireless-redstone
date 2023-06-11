@@ -38,23 +38,25 @@ public final class RedstoneChannelManager {
 	}
 
 	public static boolean isChannelPowered(@NotNull RedstoneChannelKey channel) {
-		return !TRANSMITTERS.get(channel).isEmpty();
+		return TRANSMITTERS.containsKey(channel);
 	}
 
 	public static boolean registerTransmitter(@NotNull RedstoneChannelKey channel, @NotNull RedstoneChannelTransmitter transmitter) {
-		if (TRANSMITTERS.put(channel, transmitter)) {
-			updateReceivers(channel);
-			return true;
-		} else {
-			return false;
+		var channelTrans = TRANSMITTERS.get(channel);
+		boolean retVal = channelTrans.add(transmitter);
+		if (retVal && channelTrans.size() == 1) {
+			// first transmitter added => state changed to powered
+			updateReceivers(channel, true);
 		}
+		return retVal;
 	}
 
 	public static boolean unregisterTransmitter(@NotNull RedstoneChannelKey channel, @NotNull RedstoneChannelTransmitter transmitter) {
 		var channelTrans = TRANSMITTERS.get(channel);
 		boolean retVal = channelTrans.remove(transmitter);
 		if (channelTrans.isEmpty()) {
-			updateReceivers(channel);
+			// last transmitter removed => state changed to unpowered
+			updateReceivers(channel, false);
 		}
 		return retVal;
 	}
@@ -63,7 +65,7 @@ public final class RedstoneChannelManager {
 		return RECEIVERS.put(channel, receiver);
 	}
 
-	private static void updateReceivers(@NotNull RedstoneChannelKey channel) {
-		RECEIVERS.get(channel).removeIf(receiver -> !receiver.onChannelPowered(channel));
+	private static void updateReceivers(@NotNull RedstoneChannelKey channel, boolean newState) {
+		RECEIVERS.get(channel).removeIf(receiver -> !receiver.onChannelStateChanged(channel, newState));
 	}
 }
