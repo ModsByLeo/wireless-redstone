@@ -19,7 +19,8 @@
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
-			"init": "io.github.modsbyleo.wirelessredstone.WirelessRedstoneInitializer"
+			"init": "io.github.modsbyleo.wirelessredstone.WirelessRedstoneInitializer",
+			"cardinal-components": "io.github.modsbyleo.wirelessredstone.WirelessRedstoneComponents"
 		},
 		"depends": [
 			{
@@ -35,12 +36,17 @@
 				"versions": ">=1.20"
 			},
 			{
-				"id": "cardinal-components-base"
+				"id": "cardinal-components-base",
+				"versions": ">=2.7.0"
 			},
 			{
-				"id": "cardinal-components-level"
+				"id": "cardinal-components-level",
+				"versions": ">=2.7.0"
 			}
 		]
 	},
-	"mixin": "wireless_redstone.mixins.json"
+	"mixin": "wireless_redstone.mixins.json",
+	"cardinal-components": [
+		"wireless_redstone_lt:channels"
+	]
 }
