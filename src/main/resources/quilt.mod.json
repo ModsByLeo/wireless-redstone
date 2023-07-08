@@ -36,5 +36,5 @@
 			}
 		]
 	},
-	"mixin": "wireless_redstone.mixins.json"
+	"mixin": "wireless_redstone_lt.mixins.json"
 }
