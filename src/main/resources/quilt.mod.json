@@ -33,12 +33,6 @@
 			{
 				"id": "minecraft",
 				"versions": ">=1.20"
-			},
-			{
-				"id": "cardinal-components-base"
-			},
-			{
-				"id": "cardinal-components-level"
 			}
 		]
 	},
